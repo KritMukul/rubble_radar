@@ -113,6 +113,86 @@ class DashboardScreenState extends State<DashboardScreen> {
     _searchController.addListener(_filterWorkers);
   }
 
+  Gender selectedGender = Gender.male;
+  void _showWorkerDetailsModal(Worker worker) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 13, 27, 42),
+      isScrollControlled: true,
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16,
+                right: 16,
+                top: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Worker Details',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _buildWorkerDetailRow('Name', worker.name),
+                _buildWorkerDetailRow(
+                    'Gender', worker.gender.toString().split('.').last),
+                _buildWorkerDetailRow('Details', worker.details),
+                _buildWorkerDetailRow('Address', worker.address),
+                _buildWorkerDetailRow('Phone', worker.phoneNumber),
+                _buildWorkerDetailRow('Age', '${worker.age} years'),
+                _buildWorkerDetailRow(
+                    'Body Temperature', '${worker.bodyTemp} °F'),
+                _buildWorkerDetailRow('Heart Rate', '${worker.heartRate} BPM'),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 255, 120, 90),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _workers.remove(worker);
+                      _filteredWorkers = _workers;
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Delete Worker',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildWorkerDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 16),
+          ),
+          Text(
+            value,
+            style: const TextStyle(color: Colors.white, fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _filterWorkers() {
     final query = _searchController.text.toLowerCase();
     setState(() {
@@ -150,222 +230,249 @@ class DashboardScreenState extends State<DashboardScreen> {
     final TextEditingController phoneNumberController = TextEditingController();
     final TextEditingController ageController = TextEditingController();
 
-    Gender selectedGender = Gender.male;
+    // Gender selectedGender = Gender.male;
 
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color.fromARGB(255, 13, 27, 42),
       isScrollControlled: true,
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-              left: 16,
-              right: 16,
-              top: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Register New Worker',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: nameController,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
-                  labelText: 'Worker Name',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16,
+                right: 16,
+                top: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Register New Worker',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: detailsController,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
-                  labelText: 'Details',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: bodyTempController,
-                style: const TextStyle(color: Colors.white),
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
-                  labelText: 'Body Temperature (°F)',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: nameController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
+                    labelText: 'Worker Name',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: heartRateController,
-                style: const TextStyle(color: Colors.white),
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
-                  labelText: 'Heart Rate (BPM)',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: addressController,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
-                  labelText: 'Address',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: detailsController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
+                    labelText: 'Details',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: phoneNumberController,
-                style: const TextStyle(color: Colors.white),
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
-                  labelText: 'Phone Number',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: ageController,
-                style: const TextStyle(color: Colors.white),
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
-                  labelText: 'Age',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: bodyTempController,
+                  style: const TextStyle(color: Colors.white),
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
+                    labelText: 'Body Temperature (°F)',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  DropdownButton<Gender>(
-                    value: selectedGender,
-                    style: const TextStyle(color: Colors.white),
-                    items: Gender.values.map((gender) {
-                      return DropdownMenuItem(
-                        value: gender,
-                        child: Text(
-                          gender.toString().split('.').last,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedGender = value!;
-                      });
-                    },
-                    dropdownColor: const Color.fromARGB(255, 13, 27, 42),
-                    iconEnabledColor: Colors.white,
+                const SizedBox(height: 10),
+                TextField(
+                  controller: heartRateController,
+                  style: const TextStyle(color: Colors.white),
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
+                    labelText: 'Heart Rate (BPM)',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 44, 165, 141)),
-                onPressed: () {
-                  final newWorker = Worker(
-                    id: _workers.length + 1,
-                    name: nameController.text.trim(),
-                    details: detailsController.text.trim(),
-                    latitude: 34.7628, // Default latitude
-                    longitude: -119.3060, // Default longitude
-                    bodyTemp: double.tryParse(bodyTempController.text) ?? 98.6,
-                    heartRate: int.tryParse(heartRateController.text) ?? 72,
-                    gender: selectedGender,
-                    address: addressController.text.trim(),
-                    phoneNumber: phoneNumberController.text.trim(),
-                    age: int.tryParse(ageController.text) ?? 30,
-                  );
-                  setState(() {
-                    _workers.add(newWorker);
-                    _filteredWorkers = _workers;
-                  });
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Register Worker',
-                  style: TextStyle(color: Colors.white),
                 ),
-              ),
-            ],
+                const SizedBox(height: 10),
+                TextField(
+                  controller: addressController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
+                    labelText: 'Address',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: phoneNumberController,
+                  style: const TextStyle(color: Colors.white),
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
+                    labelText: 'Phone Number',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: ageController,
+                  style: const TextStyle(color: Colors.white),
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelStyle:
+                        TextStyle(color: Color.fromARGB(146, 255, 255, 255)),
+                    labelText: 'Age',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    DropdownButton<Gender>(
+                      value: selectedGender,
+                      style: const TextStyle(color: Colors.white),
+                      items: Gender.values.map((gender) {
+                        return DropdownMenuItem(
+                          value: gender,
+                          child: Text(
+                            gender.toString().split('.').last,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value!;
+                        });
+                      },
+                      dropdownColor: const Color.fromARGB(255, 13, 27, 42),
+                      iconEnabledColor: Colors.white,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 13, 27, 42)),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 44, 165, 141)),
+                      onPressed: () {
+                        final newWorker = Worker(
+                          id: _workers.length + 1,
+                          name: nameController.text.trim(),
+                          details: detailsController.text.trim(),
+                          latitude: 34.7628, // Default latitude
+                          longitude: -119.3060, // Default longitude
+                          bodyTemp:
+                              double.tryParse(bodyTempController.text) ?? 98.6,
+                          heartRate:
+                              int.tryParse(heartRateController.text) ?? 72,
+                          gender: selectedGender,
+                          address: addressController.text.trim(),
+                          phoneNumber: phoneNumberController.text.trim(),
+                          age: int.tryParse(ageController.text) ?? 30,
+                        );
+                        setState(() {
+                          _workers.add(newWorker);
+                          _filteredWorkers = _workers;
+                        });
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Worker Added Succesfully"),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Register Worker',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -385,13 +492,17 @@ class DashboardScreenState extends State<DashboardScreen> {
           IconButton(
             icon: Icon(
               _mapView == "Normal" ? Icons.satellite : Icons.map,
+              // semanticLabel:
+              //     _mapView == "Normal" ? "Satellite View" : "Map View",
               color: Colors.white,
             ),
+            tooltip: _mapView == "Normal" ? "Satellite View" : "Normal View",
             onPressed: _toggleMapView,
           ),
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: _logout,
+            tooltip: "Logout",
           ),
         ],
       ),
@@ -423,7 +534,7 @@ class DashboardScreenState extends State<DashboardScreen> {
             Container(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Worker on Duty (${_filteredWorkers.length})',
+                'Workers on Duty (${_filteredWorkers.length})',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -488,6 +599,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ],
                       ),
+                      onTap: () => _showWorkerDetailsModal(worker),
                     ),
                   );
                 },
@@ -500,7 +612,10 @@ class DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: const Color.fromARGB(255, 255, 120, 90),
         tooltip: 'Add a Worker',
         onPressed: _showRegisterWorkerModal,
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
